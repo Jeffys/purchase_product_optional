@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
-    <t t-name="purchase_product_configurator.product">
-        <td class="o_purchase_product_configurator_img py-3 px-0">
+    <t t-name="purchase_product_optional.product">
+        <td class="o_purchase_product_optional_img py-3 px-0">
             <img
                 t-if="this.props.id"
                 class="w-100"
@@ -14,7 +14,7 @@
                 alt="Product Image"/>
         </td>
         <td class="p-3" t-att-colspan="this.props.optional ? 2:false">
-            <div class="mb-4 text-break" name="o_purchase_product_configurator_name">
+            <div class="mb-4 text-break" name="o_purchase_product_optional_name">
                 <h5 t-out="this.props.display_name"/>
                 <div
                     t-if="this.props.description_purchase"
@@ -28,7 +28,7 @@
                 <PTAL t-props="ptal" productTmplId="this.props.product_tmpl_id"/>
             </t>
         </td>
-        <td class="o_purchase_product_configurator_qty py-3 px-0 text-end">
+        <td class="o_purchase_product_optional_qty py-3 px-0 text-end">
             <div t-if="!this.props.optional" class="input-group justify-content-end">
                 <button
                     class="btn btn-secondary d-none d-md-inline-block"
@@ -60,7 +60,7 @@
                 Remove product
             </a>
         </td>
-        <td class="o_purchase_product_configurator_price py-3 px-0 text-end" name="price">
+        <td class="o_purchase_product_optional_price py-3 px-0 text-end" name="price">
             <div t-if="!this.props.optional" class="input-group justify-content-end">
                 <h5 class="text-nowrap" t-out="getFormattedPrice()"/>
             </div>

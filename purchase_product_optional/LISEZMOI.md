@@ -37,9 +37,9 @@ Si vous recherchez un partenaire capable de fournir des solutions Odoo personnal
 ## Option Produit d'Achat
 Ce module Odoo personnalisé fournit le configurateur de produit dans les achats, inspiré de celui utilisé dans les ventes.
 
-Que fait ce module ?
-Configurateur de Produits :
-Affiche le Configurateur de Produits si le produit choisi dans la ligne de commande d'achat a des produits optionnels.
+##Que fait ce module ?
+#Configurateur de Produit :
+Affiche le configurateur de produit si le produit choisi dans la ligne de commande d'achat a un produit optionnel.
 
-Prix Basé sur Chaque Fournisseur pour Chaque Produit :
-Le prix affiché est basé sur la correspondance entre le fournisseur choisi dans la commande d'achat et les informations sur le fournisseur de chaque produit. S'il n'y a pas de correspondance, le prix par défaut sera le prix standard.
+#Prix Basé sur Chaque Fournisseur pour Chaque Produit :
+Le prix affiché est basé sur la correspondance entre le fournisseur choisi dans la commande d'achat et les informations du fournisseur de chaque produit. S'il n'y a pas de correspondance, le prix par défaut sera le prix standard.

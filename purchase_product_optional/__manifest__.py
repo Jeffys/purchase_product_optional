@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "Purchase Product Optional",
-    'version': '17.0.1.0.0',
+    'version': '1.0',
     'category': 'Hidden',
     'summary': "Configure your products",
     'author': 'Doodex',
@@ -20,7 +20,7 @@ It also enables the "optional products" feature.
     ],
     'assets': {
         'web.assets_backend': [
-            'purchase_product_configurator/static/src/**/*',
+            'purchase_product_optional/static/src/**/*',
         ],
     },
     'auto_install': True,

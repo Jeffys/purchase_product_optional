@@ -1,19 +1,19 @@
-.table.o_purchase_product_configurator_table {
+.table.o_purchase_product_optional_table {
     & tr:first-child > td {
         padding-top: 0 !important;
     }
 
-    &.o_purchase_product_configurator_table_optional > :not(caption) > *:last-child > * {
+    &.o_purchase_product_optional_table_optional > :not(caption) > *:last-child > * {
         border-bottom: 0;
     }
 }
 
-.o_purchase_product_configurator_img {
+.o_purchase_product_optional_img {
     width: 120px;
     max-height: 240px;
 }
 
-.o_purchase_product_configurator_qty {
+.o_purchase_product_optional_qty {
     width: 160px;
 
     input {
@@ -31,6 +31,6 @@
     }
 }
 
-.o_purchase_product_configurator_price {
+.o_purchase_product_optional_price {
     width: 160px;
 }

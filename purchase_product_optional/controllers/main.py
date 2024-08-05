@@ -7,7 +7,7 @@ from odoo.http import Controller, request, route
 
 class ProductConfiguratorPurchaseController(Controller):
 
-    @route('/purchase_product_configurator/get_values_purchase', type='json', auth='user')
+    @route('/purchase_product_optional/get_values_purchase', type='json', auth='user')
     def get_product_configurator_values_purchase(
         self,
         product_template_id,
@@ -91,8 +91,8 @@ class ProductConfiguratorPurchaseController(Controller):
             ] if not only_main_product else []
         )
 
-    @route('/purchase_product_configurator/create_product', type='json', auth='user')
-    def purchase_product_configurator_create_product(self, product_template_id, combination):
+    @route('/purchase_product_optional/create_product', type='json', auth='user')
+    def purchase_product_optional_create_product(self, product_template_id, combination):
         """ Create the product when there is a dynamic attribute in the combination.
 
         :param int product_template_id: The product for which to seek information, as a
@@ -107,8 +107,8 @@ class ProductConfiguratorPurchaseController(Controller):
         product = product_template._create_product_variant(combination)
         return product.id
 
-    @route('/purchase_product_configurator/update_combination', type='json', auth='user')
-    def purchase_product_configurator_update_combination(
+    @route('/purchase_product_optional/update_combination', type='json', auth='user')
+    def purchase_product_optional_update_combination(
         self,
         product_template_id,
         combination,
@@ -154,8 +154,8 @@ class ProductConfiguratorPurchaseController(Controller):
             date=datetime.fromisoformat(so_date),
         )
 
-    @route('/purchase_product_configurator/get_optional_products', type='json', auth='user')
-    def purchase_product_configurator_get_optional_products(
+    @route('/purchase_product_optional/get_optional_products', type='json', auth='user')
+    def purchase_product_optional_get_optional_products(
         self,
         product_template_id,
         combination,
