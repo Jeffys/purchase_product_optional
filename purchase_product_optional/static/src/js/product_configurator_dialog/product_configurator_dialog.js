@@ -317,7 +317,7 @@ export class ProductConfiguratorDialogPurchase extends Component {
             if (isOptionalProduct) {
                 product.price = this.price_product_dialog[productTmplId] || this.price;
             } else {
-                product.price = this.price_product_dialog[productTmplId];
+                product.price = this.price_product_dialog[productTmplId] || this.price;
             }
         }
     }
