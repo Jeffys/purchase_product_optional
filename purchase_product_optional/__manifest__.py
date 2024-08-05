@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "Purchase Product Optional",
-    'version': '1.0',
+    'version': '17.0.1.0.0',
     'category': 'Hidden',
     'summary': "Configure your products",
     'author': 'Doodex',
