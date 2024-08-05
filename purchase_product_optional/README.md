@@ -35,8 +35,7 @@ If you are looking for a partner who can provide customized Odoo solutions tailo
 Visit our website at www.doodex.net to learn more about our services and how we can help you achieve your business objectives.
 [get a free audit here](https://www.doodex.net/audit-gratuit)
 
-Purchase Product Optional Configurator
-## [Purchase Product Optional Configurator]
+## Purchase Product Optional
 This custom Odoo module provide the product configurator in purchase which originally from sale
 
 ##What This Module Do?
