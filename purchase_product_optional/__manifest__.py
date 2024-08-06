@@ -6,6 +6,7 @@
     'category': 'Hidden',
     'summary': "Configure your products",
     'author': 'Doodex',
+    'images': ['static/description/banner.png'],
 
     'description': """
 Technical module:
