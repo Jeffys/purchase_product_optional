@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_order_view_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.purchase.product.configurator</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="id_vendor" class='id_vendor' nolabel='1'/>
+            </xpath>
+            <xpath expr="//form" position="inside">
+                <style>
+                .id_vendor {
+                    visibility: hidden;
+                }
+                </style>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
