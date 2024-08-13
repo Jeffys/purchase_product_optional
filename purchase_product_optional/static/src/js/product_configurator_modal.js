@@ -374,17 +374,7 @@ export const OptionalProductsModalPurchase = Dialog.extend(ServicesMixin, Varian
 
                 // add a unique id to the new products
                 var parentUniqueId = $parent[0].dataset.uniqueId;
-                var master_product_id = self.rootProduct.product_id;
-
-                rpc.query({
-                    model: 'vdl.product_equipment',
-                    method: 'take_qty',
-                        args: [productTemplateId,master_product_id],
-                }).then(function (data) {
-                        console.log(data)
-                    var parentQty = $parent.find('input[name="add_qty"]').val(data);
-                });
-
+                var parentQty = $parent.find('input[name="add_qty"]').val();
                 $addedItem.filter('.js_product').each(function () {
                     var $el = $(this);
                     var uniqueId = self._getUniqueId(this);
@@ -486,7 +476,7 @@ export const OptionalProductsModalPurchase = Dialog.extend(ServicesMixin, Varian
                 var quantity = parseFloat($(this).find('input[name="add_qty"]').first().val().replace(',', '.') || 1);
                 price += parseFloat($(this).find('.js_raw_price').html()) * quantity;
             });
-    
+
             this.$modal.find('.js_price_total .oe_currency_value').text(
                 this._priceToStr(parseFloat(price))
             );

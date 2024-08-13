@@ -16,7 +16,6 @@ The main purpose is to enables the "optional products" feature on purchase order
     'depends': ['purchase', 'purchase_product_matrix','sale'],
     'data': [
         'views/templates.xml',
-        'views/purchase_order_views.xml',
     ],
     'demo': [],
     'assets': {
