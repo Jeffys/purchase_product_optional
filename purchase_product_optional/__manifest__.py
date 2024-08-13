@@ -3,9 +3,11 @@
 {
     'name': "Purchase Product Optional",
     'version': '17.0.1.0.0',
-    'category': 'Hidden',
+    'category': 'Tools',
     'summary': "Configure your products",
     'author': 'Doodex',
+    "company": "Doodex",
+    "website": "https://www.doodex.net/",
     'images': ['static/description/banner.png'],
 
     'description': """
