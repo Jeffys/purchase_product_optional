@@ -14,8 +14,88 @@ _logger = logging.getLogger(__name__)
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
+    
+    global update_price
+    def update_price(self, price ):
+        id_vendor = ''
+        try:
+            id_vendor = self.env.context['partner_id']
+            price = self.standard_price
+            # Get supplier information
+            supplierinfo_template_ids = self.seller_ids.ids
+            supplierinfo_records = self.env['product.supplierinfo'].search_read(
+                [('id', 'in', supplierinfo_template_ids)],  # Domain to filter records
+                ['id', 'partner_id', 'price']  # Fields to read
+            )
 
-    def _get_combination_info_purchase(self, combination=False, product_id=False, add_qty=1, pricelist=False, parent_combination=False, only_template=False):
+            # Mapping data by partner_id to price
+            partner_to_price = {item['partner_id'][0]: item['price'] for item in supplierinfo_records}
+            search_id = id_vendor
+
+            # Have partner_id and match [price match]
+            if search_id in partner_to_price:
+                price = partner_to_price[search_id]
+
+            # Have partner_id and not match [price standard]
+            if search_id not in partner_to_price:
+                price = self.standard_price
+
+            # Not have partner_id [first price or standar price]
+            if not id_vendor:
+                price = supplierinfo_records[0]['price'] or price
+
+            return price 
+        except: # Controllerr will be skip
+            pass
+
+    def _get_combination_info_purchase(self, combination=False, product_id=False, add_qty=1, pricelist=False, parent_combination=False, only_template=False, partner_id=False):
+        """ Return info about a given combination.
+
+        Note: this method does not take into account whether the combination is
+        actually possible.
+
+        :param combination: recordset of `product.template.attribute.value`
+
+        :param product_id: id of a `product.product`. If no `combination`
+            is set, the method will try to load the variant `product_id` if
+            it exists instead of finding a variant based on the combination.
+
+            If there is no combination, that means we definitely want a
+            variant and not something that will have no_variant set.
+
+        :param add_qty: float with the quantity for which to get the info,
+            indeed some pricelist rules might depend on it.
+
+        :param pricelist: `product.pricelist` the pricelist to use
+            (can be none, eg. from SO if no partner and no pricelist selected)
+
+        :param parent_combination: if no combination and no product_id are
+            given, it will try to find the first possible combination, taking
+            into account parent_combination (if set) for the exclusion rules.
+
+        :param only_template: boolean, if set to True, get the info for the
+            template only: ignore combination and don't try to find variant
+
+        :return: dict with product/combination info:
+
+            - product_id: the variant id matching the combination (if it exists)
+
+            - product_template_id: the current template id
+
+            - display_name: the name of the combination
+
+            - price: the computed price of the combination, take the catalog
+                price if no pricelist is given
+
+            - list_price: the catalog price of the combination, but this is
+                not the "real" list_price, it has price_extra included (so
+                it's actually more closely related to `lst_price`), and it
+                is converted to the pricelist currency (if given)
+
+            - has_discounted_price: True if the pricelist discount policy says
+                the price does not include the discount and there is actually a
+                discount applied (price < list_price), else False
+        """
         self.ensure_one()
         display_name = self.display_name
 
@@ -79,6 +159,7 @@ class ProductTemplate(models.Model):
                 price_extra, pricelist.currency_id, product_template._get_current_company(pricelist=pricelist),
                 fields.Date.today()
             )
+        price = update_price(self=self ,price =price)
 
         price_without_discount = list_price if pricelist and pricelist.discount_policy == 'without_discount' else price
         has_discounted_price = (pricelist or product_template).currency_id.compare_amounts(price_without_discount, price) == 1
