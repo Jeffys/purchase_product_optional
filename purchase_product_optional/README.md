@@ -35,12 +35,26 @@ If you are looking for a partner who can provide customized Odoo solutions tailo
 Visit our website at www.doodex.net to learn more about our services and how we can help you achieve your business objectives.
 [get a free audit here](https://www.doodex.net/audit-gratuit)
 
-## Purchase Product Optional
-This custom Odoo module provide the product configurator in purchase which originally from sale
+## [Purchase Product Optional](index.html)
+This custom Odoo module provide the product configurator in purchase.
 
-##What This Module Do?
-#Product Configurator:
+## Features
+- **Product Configurator**
 Displays the Product Configurator if the chosen product in purchase order line has optional product.
 
-#Price Based on Each Vendor in Each Product:
-The display price is based on matches vendor we choose in purchase order and the supplier infor of each product. If don't match, then it will default by standard price
+- **Price Based on Each Vendor in Each Product**
+The display price is based on matches vendor we choose in purchase order and the supplier infor of each product. If don't match, then it will default by standard price.
+
+## Installation
+1. Download the module from this repository.
+2. Install the module in your Odoo instance.
+3. Now  you can use the purchase product configurator.
+
+## Usage
+Once installed, this feature allows you to display optional products when making a purchase order. Using an intuitive interface, you can easily add and remove optional products that have been configured in the product master.
+
+## Compatibility
+Odoo version: 17.0
+
+## License
+This module is licensed under [LGPLv3 licensed](./LICENSE)
