@@ -7,7 +7,7 @@ class PurchaseOrder(models.Model):
     id_vendor = fields.Char(string='ID')
     
     @api.onchange('partner_id')
-    def onchange_partner_id(self):
+    def onchange_id_vendor(self):
         self.id_vendor = self.partner_id.id
 
 
