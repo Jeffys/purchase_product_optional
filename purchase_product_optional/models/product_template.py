@@ -16,34 +16,50 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
     
     global update_price
-    def update_price(self, price ):
+    def update_price(self, price, selected_currency_id):
         id_vendor = ''
         try:
             id_vendor = self.env.context['partner_id']
             price = self.standard_price
+            currency_id  = self.currency_id.id
+            
             # Get supplier information
             supplierinfo_template_ids = self.seller_ids.ids
             supplierinfo_records = self.env['product.supplierinfo'].search_read(
                 [('id', 'in', supplierinfo_template_ids)],  # Domain to filter records
-                ['id', 'partner_id', 'price']  # Fields to read
+                ['id', 'partner_id', 'price', 'currency_id' ]  # Fields to read
             )
+            partner_id = self.env['res.partner'].search([('id', '=', id_vendor)], [])
 
-            # Mapping data by partner_id to price
+            # Create dictionaries for easy look-up
             partner_to_price = {item['partner_id'][0]: item['price'] for item in supplierinfo_records}
+            partner_to_currency_id = {item['partner_id'][0]: item['currency_id'] for item in supplierinfo_records}
             search_id = id_vendor
 
-            # Have partner_id and match [price match]
+            # The correct price and currency based on partner ID 
             if search_id in partner_to_price:
                 price = partner_to_price[search_id]
+            if search_id in partner_to_currency_id:
+                currency_id = partner_to_currency_id[search_id][0]               
 
-            # Have partner_id and not match [price standard]
+            # The correct price and currency based standard price , because partner ID not match
             if search_id not in partner_to_price:
                 price = self.standard_price
+            if search_id not in partner_to_currency_id:
+                currency_id = self.currency_id.id               
 
-            # Not have partner_id [first price or standar price]
+            # If not have partner ID, use the first supplier info record
             if not id_vendor:
                 price = supplierinfo_records[0]['price'] or price
+                currency_id = supplierinfo_records[0]['currency_id'][0] or currency_id    
 
+            selected_currency_id = self.env['res.currency'].search([('id', '=', selected_currency_id)], [])
+            price = self.currency_id._convert(                  #Default Currency
+                    price,                                      #Price
+                    selected_currency_id,                       #Selected Currecny
+                    self._get_current_company(price=price),     #Company related
+                    fields.Date.today()
+            )
             return price 
         except: # Controllerr will be skip
             pass
@@ -159,7 +175,11 @@ class ProductTemplate(models.Model):
                 price_extra, pricelist.currency_id, product_template._get_current_company(pricelist=pricelist),
                 fields.Date.today()
             )
-        price = update_price(self=self ,price =price)
+        selected_currency_id = self.env['ir.config_parameter'].get_param('currency_id', '')
+        price = update_price(self=self ,price =price,selected_currency_id=selected_currency_id)
+        # Update currency_id selected
+        selected_currency_id = self.env['res.currency'].search([('id', '=', selected_currency_id)], [])
+        product_template.currency_id = selected_currency_id   
 
         price_without_discount = list_price if pricelist and pricelist.discount_policy == 'without_discount' else price
         has_discounted_price = (pricelist or product_template).currency_id.compare_amounts(price_without_discount, price) == 1
