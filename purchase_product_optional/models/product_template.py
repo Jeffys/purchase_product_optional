@@ -53,8 +53,9 @@ class ProductTemplate(models.Model):
                 price = supplierinfo_records[0]['price'] or price
                 currency_id = supplierinfo_records[0]['currency_id'][0] or currency_id    
 
+            currenct_currency = self.env['res.currency'].search([('id', '=', currency_id)], [])
             selected_currency_id = self.env['res.currency'].search([('id', '=', selected_currency_id)], [])
-            price = self.currency_id._convert(                  #Default Currency
+            price = currenct_currency._convert(                 #Default Currency
                     price,                                      #Price
                     selected_currency_id,                       #Selected Currecny
                     self._get_current_company(price=price),     #Company related
