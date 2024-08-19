@@ -112,31 +112,44 @@ export class ProductConfiguratorDialogPurchase extends Component {
             for (const product of this.state.optionalProducts) {
                 const product_tmpl_id = product.product_tmpl_id;
 
-                let product_or_template = await this.orm.call('product.template', 'search_read', [[['id', '=', product_tmpl_id]]], { fields: ['seller_ids','standard_price'] });
+                let product_or_template = await this.orm.call('product.template', 'search_read', [[['id', '=', product_tmpl_id]]], { fields: ['seller_ids', 'standard_price', 'currency_id'] });
                 let supplierinfo_id = product_or_template[0].seller_ids;
 
-                let supplierinfo = await this.orm.call('product.supplierinfo', 'search_read', [[['id', 'in', supplierinfo_id]]], { fields: ['partner_id', 'price'] });
+                let supplierinfo = await this.orm.call('product.supplierinfo', 'search_read', [[['id', 'in', supplierinfo_id]]], { fields: ['partner_id', 'price', 'currency_id'] });
 
                 let arrObj = {};
                 supplierinfo.forEach(item => {
                     arrObj[item.partner_id[0]] = item.price; //
                 });
 
+                let partner_to_currency_id = {}
+                //  Create dictionaries for easy look-up
+                supplierinfo.forEach(item => {
+                    partner_to_currency_id[item.partner_id[0]] = item.currency_id[0]//
+                });
+
                 let key = this.id_vendor ? this.id_vendor : null;
                 key = key ? key : null;
 
                 let price = product_or_template[0].standard_price; //product_or_template[0].standard_price
+                let currency_id = product_or_template[0].currency_id[0]
 
                 if (key) {
                     if (arrObj[key]) {
                         price = arrObj[key]; // Set price from arrObj if key is found
                     }
+                    if (partner_to_currency_id[key]) {
+                        currency_id = partner_to_currency_id[key]; // Set currency_id if key is found
+                    }
                 } else {
                     if (supplierinfo.length > 0) {
                         price = supplierinfo[0].price; // Set to first supplier price if available supplierinfo[0].price
+                        currency_id = supplierinfo[0].currency_id[0];
                     }
                 }
-
+                price = price
+                let from_currency = currency_id
+                price = await this.orm.call('product.template', 'convert_price', [[], price, from_currency]);
                 optionalProductPrices[product_tmpl_id] = price;
                 this.price_product_dialog[product_tmpl_id] = price; // add optional object to obj list price
             }
@@ -149,35 +162,44 @@ export class ProductConfiguratorDialogPurchase extends Component {
     }
 
     async get_product_update_price() {
-        try {
-            let data = this.supplierinfo_id; // Array of partner names
-            let supplierinfo = await this.orm.call('product.supplierinfo', 'search_read', [[['id', 'in', data]], ['partner_id', 'price']]);
-            let arr = supplierinfo; // Initialize an empty object
-            this.arr = arr;
-            let arrObj = {};
-            arr.forEach(item => {
-                arrObj[item.partner_id[0]] = item.price;
-            });
-            let key = this.id_vendor
+        try {           
+            let product_or_template = await this.orm.call('product.template', 'search_read', [[['id', '=', this.product_tmpl_id]]], { fields: ['seller_ids', 'standard_price', 'currency_id'] });
+            let supplierinfo_id = this.supplierinfo_id; // Array of partner names
+            let supplierinfo = await this.orm.call('product.supplierinfo', 'search_read', [[['id', 'in', supplierinfo_id]]], { fields: ['partner_id', 'price', 'currency_id'] });
 
-            this.price = this.standard_price; // Set default price if key is not found
-            let found = false;
+            let arrObj = {};
+            supplierinfo.forEach(item => {
+                arrObj[item.partner_id[0]] = item.price; //
+            });
+
+            let partner_to_currency_id = {}
+            //  Create dictionaries for easy look-up
+            supplierinfo.forEach(item => {
+                partner_to_currency_id[item.partner_id[0]] = item.currency_id[0]//
+            });
+
+            let key = this.id_vendor ? this.id_vendor : null;
+            key = key ? key : null;
+
+            let price = product_or_template[0].standard_price; //product_or_template[0].standard_price
+            let currency_id = product_or_template[0].currency_id[0]
             if (key) {
-                for (let dataKey in arrObj) {
-                    this.price_product_dialog[this.product_tmpl_id] = arrObj[key]; //this.product_tmpl_id
-                    if (dataKey == key) {
-                        this.price = arrObj[key];
-                        found = true;
-                        break;
-                    }
+                if (arrObj[key]) {
+                    price = arrObj[key]; // Set price from arrObj if key is found
+                }
+                if (partner_to_currency_id[key]) {
+                    currency_id = partner_to_currency_id[key]; // Set currency_id if key is found
+                }
+            } else {
+                if (supplierinfo.length > 0) {
+                    price = supplierinfo[0].price; // Set to first supplier price if available supplierinfo[0].price
+                    currency_id = supplierinfo[0].currency_id[0];
                 }
             }
-            if (!key) {
-                if (supplierinfo) {
-                    this.price_product_dialog[this.product_tmpl_id] = supplierinfo[0].price;
-                    this.price = supplierinfo[0].price;
-                }
-            }
+            price = price
+            let from_currency = currency_id
+            price = await this.orm.call('product.template', 'convert_price', [[], price, from_currency]);
+            this.price = price;
             return arrObj;
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -306,14 +328,14 @@ export class ProductConfiguratorDialogPurchase extends Component {
             if (productTmplId === this.env.mainProductTmplId) {
                 const product = this._findProduct(productTmplId);
                 product.quantity = 1;
-                product.price =  this.price_product_dialog[productTmplId] || this.price;
+                product.price = this.price_product_dialog[productTmplId] || this.price;
                 return;
             }
             this._removeProduct(productTmplId);
         } else {
             const product = this._findProduct(productTmplId);
             product.quantity = quantity;
-            
+
             if (isOptionalProduct) {
                 product.price = this.price_product_dialog[productTmplId] || this.price;
             } else {
